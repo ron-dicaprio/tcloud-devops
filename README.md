@@ -1,4 +1,3 @@
-# tcloud
 # Accelerate The World 
 
 ## download tencentcloud SDK
