@@ -118,6 +118,69 @@ def get_all_config():
     except TencentCloudSDKException as err:
         return err
 
+# 获取应用的applicationID,此ID不同于部署组ID
+def get_applicationlist():
+    try:
+        # 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
+        cred = credential.Credential(secret_id, secret_key)
+        # 实例化一个http选项，可选的，没有特殊需求可以跳过
+        httpProfile = HttpProfile()
+        httpProfile.endpoint = tsf_endpoint
+
+        # 实例化一个client选项，可选的，没有特殊需求可以跳过
+        clientProfile = ClientProfile()
+        clientProfile.httpProfile = httpProfile
+        # 实例化要请求产品的client对象,clientProfile是可选的
+        client = tsf_client.TsfClient(cred, tce_region, clientProfile)
+
+        # 实例化一个请求对象,每个接口都会对应一个request对象
+        req = models.DescribeApplicationsRequest()
+        params = {
+
+        }
+        req.from_json_string(json.dumps(params))
+
+        # 返回的resp是一个DescribeApplicationsResponse的实例，与请求对象对应
+        resp = client.DescribeApplications(req)
+        # 输出json格式的字符串回包
+        str_json=json.loads(resp.to_json_string())
+        applicationlist=[]
+        for i in range(0,len(str_json["Result"]["Content"])):
+            applicationlist.append(str_json["Result"]["Content"][i]["ApplicationId"])
+        return applicationlist
+
+    except TencentCloudSDKException as err:
+        return err
+
+def get_ContainerGroups(self):
+    try:
+        # 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
+        cred = credential.Credential(secret_id, secret_key)
+        # 实例化一个http选项，可选的，没有特殊需求可以跳过
+        httpProfile = HttpProfile()
+        httpProfile.endpoint = tsf_endpoint
+
+        # 实例化一个client选项，可选的，没有特殊需求可以跳过
+        clientProfile = ClientProfile()
+        clientProfile.httpProfile = httpProfile
+        # 实例化要请求产品的client对象,clientProfile是可选的
+        client = tsf_client.TsfClient(cred, tce_region, clientProfile)
+
+        # 实例化一个请求对象,每个接口都会对应一个request对象
+        req = models.DescribeContainerGroupsRequest()
+        params = {
+            "ApplicationId": self
+        }
+        req.from_json_string(json.dumps(params))
+
+        # 返回的resp是一个DescribeContainerGroupsResponse的实例，与请求对象对应
+        resp = client.DescribeContainerGroups(req)
+        # 输出json格式的字符串回包
+        print(resp.to_json_string())
+
+    except TencentCloudSDKException as err:
+        print(err)
+
 if __name__=="__main__":
     config_init()
     func_choice=easygui.choicebox(title="腾讯云TSF接口调用工具V0.1",msg="请选择以下相应的功能",choices=["创建集群微服务应用","获取集群配置文件","获取集群镜像版本号"])
@@ -135,7 +198,10 @@ if __name__=="__main__":
         easygui.codebox(title="腾讯云TSF接口调用工具V0.1",msg="TSF接口调用结果如下:",text=str_json)
 
     elif func_choice=='获取集群镜像版本号':
-        print('todo list')
+        for i in get_applicationlist():
+            get_ContainerGroups(i)
+        #easygui.codebox(title="腾讯云TSF接口调用工具V0.1",msg="TSF接口调用结果如下:",text=list(get_applicationlist()))
+        
     else:
         print("选择错误,请确认!")
         sys.exit(-1)
