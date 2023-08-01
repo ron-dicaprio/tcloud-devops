@@ -121,7 +121,7 @@ def search_last_imgver(app_name):
 		},
 		{
 			"field": "name",
-			"value": "*%s*" % (app_name),
+			"value": "*%s" % (app_name),
 			"operation": "MATCH"
 		}
 		],
