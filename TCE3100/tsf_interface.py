@@ -119,7 +119,7 @@ def get_all_config():
         return err
 
 # 获取应用的applicationID,此ID不同于部署组ID
-def get_applicationlist():
+def get_applicationID_list():
     try:
         # 实例化一个认证对象，入参需要传入腾讯云账户 SecretId 和 SecretKey，此处还需注意密钥对的保密
         cred = credential.Credential(secret_id, secret_key)
@@ -198,7 +198,8 @@ if __name__=="__main__":
         easygui.codebox(title="腾讯云TSF接口调用工具V0.1",msg="TSF接口调用结果如下:",text=str_json)
 
     elif func_choice=='获取集群镜像版本号':
-        for i in get_applicationlist():
+        for i in get_applicationID_list():
+            # 后期处理一下json并打印
             get_ContainerGroups(i)
         #easygui.codebox(title="腾讯云TSF接口调用工具V0.1",msg="TSF接口调用结果如下:",text=list(get_applicationlist()))
         
