@@ -8,7 +8,7 @@
 # pip install --upgrade tencentcloud-sdk-python 
 ```
 
-## TCE enviroment
+## Basic enviroment
 
 ```sh 
 # env info
