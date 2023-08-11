@@ -65,51 +65,16 @@ docker run --name zabbix-grafana -it \
       -p 3000:3000 \
       -d grafana:zabbix
 
-
-# 不建议用docker跑，一定要挂载配置文件
-docker run --name zabbix-agent  -it \
-      -e TZ="Asia/Shanghai" \
-      -e ZBX_HOSTNAME="Zabbix server" \
-      -e ZBX_SERVER_HOST=10.0.0.100 \
-      -e ZBX_SERVER_PORT=10051 \
-      --privileged \
-      --restart unless-stopped \
-      -p 10050:10050 \
-      -d zabbix/zabbix-agent:latest
-
-
 # 查看端口转发情况
 ss -lnt
 
-#select * from user;
-#update user set authentication_string=password('Epointadmin#2023');
-#flush privileges;
-
-
-# 安装docker
-mv /usr/lib/systemd/system/docker.service /data/
-yum reinstall *.rpm
-systemctl daemon-reload
-systemctl restart docker.service
-
-docker run --name mysql-server -t \
-      -e MYSQL_DATABASE="zabbix" \
-      -e MYSQL_USER="zabbix" \
-      -e MYSQL_PASSWORD="zabbix_pwd" \
-      -e MYSQL_ROOT_PASSWORD="root_pwd" \
-      -d mysql:5.7
-
-docker run --name zabbix-server -e DB_SERVER_HOST="10.0.0.100" -e MYSQL_USER="root" -e MYSQL_PASSWORD="Epointadmin#2023" -d  -p 10051:10051 zabbix-server-mysql:latest
-docker run --name zabbix-web-nginx -e DB_SERVER_HOST="10.0.0.100" -e MYSQL_USER="root" -e MYSQL_PASSWORD="Epointadmin#2023" -e ZBX_SERVER_HOST="10.0.0.100" -e PHP_TZ="Asia/shanghai" -d zabbix-web-nginx-mysql:latest
 ```
 
-# get key
+# get key via zabbix server
 zabbix_get -s 10.0.0.110 -p 10050 -k "system.hostname"
 
-#
-cd /etc/zabbix/
 
-# 时间同步很重要 
+# zabbix监控的话，时间同步很重要 
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
 hwclock -w
 
@@ -117,6 +82,6 @@ hwclock -w
 systemctl restart zabbix-agent2
 systemctl enable zabbix-agent2
 
-# 设置hostname
+# 设置hostname 非必要
 hostnamectl set-hostname 10.0.0.111
 hostname -F /etc/hostname
