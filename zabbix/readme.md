@@ -78,13 +78,13 @@ zabbix_get -s 10.0.0.110 -p 10050 -k "system.hostname"
 
 
 # zabbix监控的话，时间同步很重要 
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime 
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime   
 hwclock -w
 
 # 重启服务并设置开机自启动
-systemctl restart zabbix-agent2
+systemctl restart zabbix-agent2  
 systemctl enable zabbix-agent2
 
 # 设置hostname 非必要
-hostnamectl set-hostname 10.0.0.111
+hostnamectl set-hostname 10.0.0.111   
 hostname -F /etc/hostname
