@@ -3,9 +3,11 @@
 ## 
 ```sh
 # 设计思路
-zabbix-server-mysql,zabbix-web-nginx-mysql,mysql 5.7.43 用docker部署。
-
+zabbix-server-mysql,zabbix-web-nginx-mysql,mysql, grafana 用docker部署。
 agent 用RPM的方式部署和接入
+为了方便离线安装，可制作成bin包的方式分发
+zabbix server本机安装ansible实现批量下发bin包
+后续考虑传参的方式接受zabbix server的地址
 ```
 ## download packages
 ```sh
