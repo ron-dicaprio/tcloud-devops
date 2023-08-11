@@ -1,4 +1,4 @@
-# How To Install Zabbix 5.0 LTS in Cnetos 7.x
+# How To Install Zabbix 5.0 LTS in Cnetos 7.9
 
 ## 
 ```sh
