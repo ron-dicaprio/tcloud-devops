@@ -18,7 +18,7 @@ docker pull mysql:5.7
 docker pull zabbix/zabbix-server-mysql:centos-latest
 docker pull zabbix/zabbix-web-nginx-mysql:latest
 
-#
+# 创建docker网络
 docker network create -d bridge zabbix_net
 
 
