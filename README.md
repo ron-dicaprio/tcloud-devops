@@ -1,4 +1,4 @@
-# We Use Code To Accelerate The World 
+# We Use Code
 ## TCE3100
 ```sh
 # we use tencent SDK for TCE interface
