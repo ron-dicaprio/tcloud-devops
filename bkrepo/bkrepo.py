@@ -35,7 +35,7 @@ def del_history_task():
 		else:
 			del_url='%s/replication/api/task/delete/%s' % (domain,del_key)
 			print(del_url)
-			res=requests.delete(del_url,auth=('zrdzfp','bkrepo123456'))
+			res=requests.delete(del_url,auth=('zrdzfp','passwd'))
 			print(res.text)
 
 def create_sync_task(app_name):
@@ -86,7 +86,7 @@ def create_sync_task(app_name):
 	}
 	params=json.dumps(params)
 	print("--开始分发镜像%s:%s--" % (app_name,app_version))
-	res=requests.post(weburl,headers=header, data=params,auth=('zrdzfp','bkrepo123456'))
+	res=requests.post(weburl,headers=header, data=params,auth=('zrdzfp','passwd'))
 	# 防止蓝鲸接口被弄挂  休息两秒继续干
 	time.sleep(2)
 	print(res.text)
@@ -129,7 +129,7 @@ def search_last_imgver(app_name):
 	}
 	}
 	payloads=json.dumps(payloads)
-	res=requests.post(weburl,headers=header,data=payloads,auth=('zrdzfp','bkrepo123456'))
+	res=requests.post(weburl,headers=header,data=payloads,auth=('zrdzfp','passwd'))
 	#if len(res.text['data']['records']) > 0:
 	return json.loads(res.text)['data']['records'][1]['latest']
 		
