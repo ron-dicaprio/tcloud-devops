@@ -15,6 +15,7 @@
 
 ## bkrepo
 ```sh
+# https://github.com/TencentBlueKing/bk-repo
 # This script is used for sync Cpack images to subsystem
 ```
 ## zabbix
