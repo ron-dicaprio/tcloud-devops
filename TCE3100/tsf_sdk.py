@@ -7,8 +7,8 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentClo
 from tencentcloud.tsf.v20180326 import tsf_client, models
 
 # 生产及预生产都是通过AKSK判定，禁止弄错
-SecretId='AKIDb5ObdR1NUN1WtLm9QUM0SjoZ6Pi8VxHU'
-SecretKey='CGG553DF5iFcnlZHxY3UsCWmAa2iNByw'
+SecretId='AKIDb5Ob*********QUM0SjoZ6Pi8VxHU'
+SecretKey='CGG553D**********3UsCWmAa2iNByw'
 tce_region='ap-guangzhou'
 tce_endpoint='tsf.tencentcloudapi.com'
 
