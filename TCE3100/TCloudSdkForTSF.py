@@ -24,6 +24,7 @@ class TSFSdkClient():
         : ClusterId    应用所属集群ID
         : SubNode=None 可选子节点, 如SecretId,SecretKey,endpoint. 功能性原因暂时禁用该参数
         """
+	# 下次写的时候记得要控制全局变量，别这么写了
         global SecretId,SecretKey,tce_region,endpoint,NamespaceId,ClusterId,SubnetId,RepoRoot,scheme
         try:
             # 判断是否存在yaml配置文件
