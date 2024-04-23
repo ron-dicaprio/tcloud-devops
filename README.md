@@ -23,3 +23,8 @@
 # We use Zabbix to monitor hosts
 # for me, bin file is easy-to-use and friendly 
 ```
+## LanKing
+```sh
+# we use LanKing to auto ci .
+# run multi task via lanking
+```
