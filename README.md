@@ -28,3 +28,7 @@
 # we use LanKing to auto ci .
 # run multi task via lanking
 ```
+## pyfastapi
+```sh
+# we use fastapi to build a resful interface webserver.
+```
