@@ -79,22 +79,3 @@ if __name__=="__main__":
     # s3bucket
     #print(S3StorageRequest.UploadS3File(S3StorageClient,"s3bucket","./CloudFlareR2Config.yaml","CloudFlareR2Config.yaml",UploadFolder=None))
     print(S3StorageRequest.DeleteS3File(S3StorageClient,"s3bucket","CloudFlareR2Config.yaml"))
-
-"""
-令牌值
-BhgIMilQBCdIADZ35vQx3LWzAn-nAw7xx_FmDGM7
-为 S3 客户端使用以下凭据：
-访问密钥 ID
-4e565745717b2931dd5c34deac47baa7
-机密访问密钥
-98b0ed230afe72b6e67304e537572688d0ca33d3766367cef130a4608c89d0a9
-S3 api接口地址
-https://40493c9912c295dada5a552efefa6e7c.r2.cloudflarestorage.com
-
-
-​​Class A operations
-Class A Operations include ListBuckets, PutBucket, ListObjects, PutObject, CopyObject, CompleteMultipartUpload, CreateMultipartUpload, ListMultipartUploads, UploadPart, UploadPartCopy, ListParts, PutBucketEncryption, PutBucketCors and PutBucketLifecycleConfiguration.
-
-​​Class B operations
-Class B Operations include HeadBucket, HeadObject, GetObject, UsageSummary, GetBucketEncryption, GetBucketLocation, GetBucketCors and GetBucketLifecycleConfiguration.
-"""
