@@ -1,0 +1,5 @@
+cos:
+  SecretId: 'AKIDb5****************Z6Pi8VxHU'
+  SecretKey: 'CGG553D****************WmAa2iNByw'
+  endpoint: 'cos.ap-guangzhou.myqcloud.com'
+  tce_region: 'ap-guangzhou'
