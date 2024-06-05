@@ -34,5 +34,5 @@
 ```
 ## COS
 ```sh
-# We use boto3 to operate Tencent COS through the S3 storage protocol
+# We use boto3 to operate Tencent COS By S3 storage protocol
 ```
