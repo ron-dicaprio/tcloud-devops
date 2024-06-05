@@ -32,3 +32,7 @@
 ```sh
 # we use fastapi to build a resful interface webserver.
 ```
+## COS
+```sh
+# We use boto3 to operate Tencent COS through the S3 storage protocol
+```
