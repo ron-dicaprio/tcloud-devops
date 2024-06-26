@@ -15,12 +15,12 @@
 
 ## 修改主服务器配置
 ### 修改my.cnf,
-log_bin=mysql
-server_id=100
-sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf
-sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf
-sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf
-docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
+> log_bin=mysql
+> server_id=100
+> sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf
+> sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf
+> sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf
+> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
 ```yaml
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
@@ -65,9 +65,10 @@ binlog_ignore_db = performation_schema
 symbolic-links=0
 ```
 ## 创建从节点的访问账号
+```sql
 CREATE USER 'slave'@'%' IDENTIFIED BY '@Sysadm1n';
 GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave'@'%';
-
+```
 ## 查看master状态
 ```sql
 show master status;
@@ -82,9 +83,9 @@ mysql> show master status;
 
 ## 修改从服务器配置
 ### 修改my.cnf
-server_id=101
-sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf
-docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
+> server_id=101
+> sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf
+> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
 ```yaml
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
@@ -128,13 +129,14 @@ binlog_ignore_db = performation_schema
 symbolic-links=0
 ```
 ## 设置主节点
+```sql
 CHANGE MASTER TO MASTER_HOST='10.0.8.15',MASTER_PORT=53306,MASTER_USER='slave',MASTER_PASSWORD='@Sysadm1n',MASTER_LOG_FILE='mysql.000001',MASTER_LOG_POS=609;
 
 ## 开启主从同步并查看从节点日志
 start slave;
 
 show slave status;
-
+```
 
 ## 推荐mysqld配置文件
 ```yaml
