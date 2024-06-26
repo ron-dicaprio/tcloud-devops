@@ -1,6 +1,6 @@
 ## 以两个mysql5.7的docker容器为例为例搭建主从
-> DB-Master:主机10.0.8.15
-> DB-Slave :备机10.0.8.16
+> DB-Master:主机10.0.8.15  
+> DB-Slave :备机10.0.8.16  
 
 ## 安装mysql客户端
 ```sh
@@ -15,12 +15,12 @@
 
 ## 修改主服务器配置
 ### 修改my.cnf,
-> log_bin=mysql
-> server_id=100
-> sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf
-> sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf
-> sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf
-> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
+> log_bin=mysql  
+> server_id=100  
+> sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf  
+> sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf  
+> sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf  
+> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf   
 ```yaml
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
@@ -83,9 +83,9 @@ mysql> show master status;
 
 ## 修改从服务器配置
 ### 修改my.cnf
-> server_id=101
-> sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf
-> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
+> server_id=101  
+> sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf  
+> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf  
 ```yaml
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
