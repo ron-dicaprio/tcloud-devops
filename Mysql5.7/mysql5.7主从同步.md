@@ -189,6 +189,7 @@ binlog_ignore_db = performation_schema
 symbolic-links=0
 ```
 ## 内容解读：
+```yaml
 sql_mode：设置MySQL的SQL模式，这里指定了一系列严格模式和错误处理模式，例如禁止日期字段中的零值、禁止自动创建用户等。
 binlog_cache_size：指定了二进制日志缓存的大小，这是MySQL服务器用于存储二进制日志事件的缓冲区大小。
 thread_stack：设置线程栈的大小，即每个MySQL线程的栈空间大小。
@@ -221,3 +222,4 @@ binlog_format：设置二进制日志的格式，这里设置为ROW格式。
 expire-logs-days：设置二进制日志文件的过期时间。
 binlog-ignore-db：设置要忽略的数据库，这里分别忽略了mysql、information_schema和performance_schema数据库。
 symbolic-links：设置是否允许符号链接，这里设置为0，禁用符号链接以防止安全风险。
+```
