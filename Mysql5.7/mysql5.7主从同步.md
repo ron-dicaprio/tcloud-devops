@@ -1,24 +1,27 @@
 ## 以两个mysql5.7的docker容器为例为例搭建主从
-DB-Master:主机10.0.8.15
-DB-Slave :备机10.0.8.16
+> DB-Master:主机10.0.8.15
+> DB-Slave :备机10.0.8.16
 
 ## 安装mysql客户端
+```sh
 # yum install mysql -y
-
+```
 ## 拉起DB-Master和DB-Slave:
+```sh
 # docker run --name DB-Master --restart=always --net=DB-bridge -d -p 53306:3306 -e TZ="Asia/Shanghai" -e MYSQL_ROOT_PASSWORD=@Sysadm1n -v /data/mysql_1/data:/var/lib/mysql mysql:5.7
 
 # docker run --name DB-Slave  --restart=always --net=DB-bridge -d -p 53307:3306 -e TZ="Asia/Shanghai" -e MYSQL_ROOT_PASSWORD=@Sysadm1n -v /data/mysql_2/data:/var/lib/mysql mysql:5.7
+```
 
 ## 修改主服务器配置
-# 修改my.cnf,
+### 修改my.cnf,
 log_bin=mysql
 server_id=100
-# sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf
-# sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf
-# sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf
-# docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
-
+sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf
+sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf
+sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf
+docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
+```yaml
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 log_bin=mysql
@@ -60,12 +63,13 @@ binlog_ignore_db = information_schema
 binlog_ignore_db = performation_schema
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
-
+```
 ## 创建从节点的访问账号
 CREATE USER 'slave'@'%' IDENTIFIED BY '@Sysadm1n';
 GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave'@'%';
 
 ## 查看master状态
+```sql
 show master status;
 mysql> show master status;
 +--------------+----------+--------------+------------------+-------------------+
@@ -74,15 +78,14 @@ mysql> show master status;
 | mysql.000001 |      609 |              |                  |                   |
 +--------------+----------+--------------+------------------+-------------------+
 1 row in set
-
+```
 
 ## 修改从服务器配置
-# 修改my.cnf
+### 修改my.cnf
 server_id=101
-# sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf
-# 
-# docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
-
+sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf
+docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf
+```yaml
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 server_id=101
@@ -123,7 +126,7 @@ binlog_ignore_db = information_schema
 binlog_ignore_db = performation_schema
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
-
+```
 ## 设置主节点
 CHANGE MASTER TO MASTER_HOST='10.0.8.15',MASTER_PORT=53306,MASTER_USER='slave',MASTER_PASSWORD='@Sysadm1n',MASTER_LOG_FILE='mysql.000001',MASTER_LOG_POS=609;
 
@@ -134,6 +137,7 @@ show slave status;
 
 
 ## 推荐mysqld配置文件
+```yaml
 [mysqld]
 sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 binlog_cache_size = 32K
@@ -181,7 +185,7 @@ binlog_ignore_db = performation_schema
 
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
-
+```
 ## 内容解读：
 sql_mode：设置MySQL的SQL模式，这里指定了一系列严格模式和错误处理模式，例如禁止日期字段中的零值、禁止自动创建用户等。
 binlog_cache_size：指定了二进制日志缓存的大小，这是MySQL服务器用于存储二进制日志事件的缓冲区大小。
