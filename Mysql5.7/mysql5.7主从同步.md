@@ -1,27 +1,24 @@
-## 以两个mysql5.7的docker容器为例为例搭建主从
-> DB-Master:主机10.0.8.15  
-> DB-Slave :备机10.0.8.16  
 
-## 安装mysql客户端
-```sh
-# yum install mysql -y
-```
-## 拉起DB-Master和DB-Slave:
-```sh
-# docker run --name DB-Master --restart=always --net=DB-bridge -d -p 53306:3306 -e TZ="Asia/Shanghai" -e MYSQL_ROOT_PASSWORD=@Sysadm1n -v /data/mysql_1/data:/var/lib/mysql mysql:5.7
 
-# docker run --name DB-Slave  --restart=always --net=DB-bridge -d -p 53307:3306 -e TZ="Asia/Shanghai" -e MYSQL_ROOT_PASSWORD=@Sysadm1n -v /data/mysql_2/data:/var/lib/mysql mysql:5.7
+# mysql5.7主从复制
+
+##  以两个mysql5.7的docker容器为例为例搭建主从
+
+```shell
+# 主机规划
+DB-Master:主机10.0.8.15 
+DB-Slave :备机10.0.8.16
+# 安装mysql客户端
+yum install mysql -y
+# 拉起DB-Master
+docker run --name DB-Master --restart=always -d -p 53306:3306 -e TZ="Asia/Shanghai" -e MYSQL_ROOT_PASSWORD=@Sysadm1n -v /data/mysql_1/data:/var/lib/mysql mysql:5.7
+# 拉起DB-Slave
+docker run --name DB-Slave --restart=always -d -p 53307:3306 -e TZ="Asia/Shanghai" -e MYSQL_ROOT_PASSWORD=@Sysadm1n -v /data/mysql_2/data:/var/lib/mysql mysql:5.7
 ```
 
 ## 修改主服务器配置
-### 修改my.cnf,
-> log_bin=mysql  
-> server_id=100  
-> sed -i '29a log_bin=mysql' /etc/mysql/mysql.conf.d/mysqld.cnf  
-> sed -i '29a server_id=100' /etc/mysql/mysql.conf.d/mysqld.cnf  
-> sed -i '29a sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' /etc/mysql/mysql.conf.d/mysqld.cnf  
-> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf   
-```yaml
+
+```ini
 # cat /etc/mysql/mysql.conf.d/mysqld.cnf
 [mysqld]
 log_bin=mysql
@@ -64,12 +61,16 @@ binlog_ignore_db = performation_schema
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
 ```
-## 创建从节点的访问账号
+
+## 创建从服务器同步账号
+
 ```sql
 CREATE USER 'slave'@'%' IDENTIFIED BY '@Sysadm1n';
 GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave'@'%';
 ```
+
 ## 查看master状态
+
 ```sql
 show master status;
 mysql> show master status;
@@ -82,12 +83,8 @@ mysql> show master status;
 ```
 
 ## 修改从服务器配置
-### 修改my.cnf
-> server_id=101  
-> sed -i '29a server_id=101' /etc/mysql/mysql.conf.d/mysqld.cnf  
-> docker中位于/etc/mysql/mysql.conf.d/mysqld.cnf  
-```yaml
-# cat /etc/mysql/mysql.conf.d/mysqld.cnf
+
+```ini
 [mysqld]
 server_id=101
 sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
@@ -128,68 +125,23 @@ binlog_ignore_db = performation_schema
 # Disabling symbolic-links is recommended to prevent assorted security risks
 symbolic-links=0
 ```
+
 ## 设置主节点
+
 ```sql
+# 设置主节点信息
 CHANGE MASTER TO MASTER_HOST='10.0.8.15',MASTER_PORT=53306,MASTER_USER='slave',MASTER_PASSWORD='@Sysadm1n',MASTER_LOG_FILE='mysql.000001',MASTER_LOG_POS=609;
-
-## 开启主从同步并查看从节点日志
+# 关闭主从同步
+stop slave；
+# 开启主从同步
 start slave;
-
+# 查看从节点状态
 show slave status;
 ```
 
-## 推荐mysqld配置文件
-```yaml
-[mysqld]
-sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
-binlog_cache_size = 32K
-thread_stack = 256K
-join_buffer_size = 256K
-query_cache_type = 0
-max_heap_table_size = 128M
-lower_case_table_names = 1
-port = 3306
-default_storage_engine = InnoDB
-performance_schema_max_table_instances = 400
-table_definition_cache = 400
-skip-external-locking
-key_buffer_size = 256M
-table_open_cache = 1024
-sort_buffer_size = 4096K
-net_buffer_length = 4K
-read_buffer_size = 4096K
-read_rnd_buffer_size = 256K
-myisam_sort_buffer_size = 64M
-thread_cache_size = 128
-query_cache_size = 0M
-tmp_table_size = 128M
+## 配置文件解读
 
-
-explicit_defaults_for_timestamp = true
-#skip-name-resolve
-max_connections = 500
-max_connect_errors = 100
-open_files_limit = 65535
-
-
-skip-ssl
-
-
-log_bin = ON
-server_id = 2
-sync_binlog = 1
-binlog_format = ROW
-expire-logs-days=10
-binlog-ignore-db = mysql
-binlog_ignore_db = information_schema
-binlog_ignore_db = performation_schema
-
-
-# Disabling symbolic-links is recommended to prevent assorted security risks
-symbolic-links=0
-```
-## 内容解读：
-```yaml
+```ini
 sql_mode：设置MySQL的SQL模式，这里指定了一系列严格模式和错误处理模式，例如禁止日期字段中的零值、禁止自动创建用户等。
 binlog_cache_size：指定了二进制日志缓存的大小，这是MySQL服务器用于存储二进制日志事件的缓冲区大小。
 thread_stack：设置线程栈的大小，即每个MySQL线程的栈空间大小。
@@ -223,3 +175,6 @@ expire-logs-days：设置二进制日志文件的过期时间。
 binlog-ignore-db：设置要忽略的数据库，这里分别忽略了mysql、information_schema和performance_schema数据库。
 symbolic-links：设置是否允许符号链接，这里设置为0，禁用符号链接以防止安全风险。
 ```
+
+
+
