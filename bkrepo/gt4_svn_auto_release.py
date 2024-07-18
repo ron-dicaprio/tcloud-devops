@@ -1,7 +1,7 @@
 import requests,json,time,os,zipfile
 
 def del_history_task():
-	res_info=json.loads(requests.get('http://cpack.xc11.uat-sat.com/web/replication/api/task/page/ysc-xdzswj?sortType=CREATED_TIME&pageNumber=1&pageSize=8').text)
+	res_info=requests.get('http://cpack.xc11.uat-sat.com/web/replication/api/task/page/ysc-xdzswj?sortType=CREATED_TIME&pageNumber=1&pageSize=8').json()
 	#res_info['data']['records'][i]['key']
 	lenth=len(res_info['data']['records'])
 	for index in range(0,lenth):
