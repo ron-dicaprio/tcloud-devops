@@ -1,0 +1,49 @@
+D1:
+  D1_url: 'https://api.cloudflare.com/client/v4/accounts/40493c9912*********efefa6e7c/d1/database/a3ae4134-**********-960c-f69868631852/query'
+  Authorization: 'Bearer GXAJ9wyPrY3v*****************cLcL_vG07SO'
+  X-Auth-Key: '36da7146bc03e***************943ec4c80c5'
+  X-Auth-Email: 'hotmail@hotmail.com'
+
+# payload={
+#     "params": [],
+#     "sql": """CREATE TABLE `gt4_info` (
+#   `sys_code` varchar(18) NOT NULL,
+#   `event_type` varchar(18) NOT NULL,
+#   `timestamp` datetime ,
+#   `event_name` varchar(20) NOT NULL,
+#   `remark` varchar(200),
+#   `event_url` varchar(200) ,
+#   `img_path` varchar(200));"""
+# }
+
+KV:
+  PutKV_url: 'https://api.cloudflare.com/client/v4/accounts/40493c9912*********efefa6e7c/storage/kv/namespaces/e2f2f22b2********655fa00a107c/bulk'
+  GetKV_url: 'https://api.cloudflare.com/client/v4/accounts/40493c9912*********efefa6e7c/storage/kv/namespaces/e2f2f22b2********655fa00a107c/values/'
+  Authorization: 'Bearer j0-jAga_Lf82HAonRA***************lrSRrXgRU8'
+  X-Auth-Key: '36da7146bc03e***************943ec4c80c5'
+  X-Auth-Email: 'hotmail@hotmail.com'
+
+# payload = [
+#     {
+#         "base64": False,
+#         "expiration": 1578435000,
+#         "expiration_ttl": 300,
+#         "key": "My-Key",
+#         "metadata": {"someMetadataKey": "someMetadataValue"},
+#         "value": "Some string"
+#     }
+# ]
+
+R2:
+  s3_url: 'https://40493c9912*********efefa6e7c.r2.cloudflarestorage.com'
+  tikect: '-axBp0kmpzC_u6u**************As94DM_lUW'
+  aws_access_key_id: '4e565745*************4deac47baa7'
+  aws_secret_access_key: '3d8e9f739fc*************************9134cd29230b320e84e02d20edeb68'
+
+
+
+AI:
+  AI_url: 'https://api.cloudflare.com/client/v4/accounts/40493c9912*********efefa6e7c/ai/run/@cf/qwen/qwen1.5-14b-chat-awq'
+  Authorization: 'Bearer SlaKmXBprj7***********************Uzf7lG1Qh8'
+  X-Auth-Key: '36da7146bc03e***************943ec4c80c5'
+  X-Auth-Email: 'hotmail@hotmail.com'
