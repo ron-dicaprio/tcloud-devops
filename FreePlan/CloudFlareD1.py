@@ -78,7 +78,7 @@ class D1SdkClient():
 if __name__=="__main__":
     D1_url,Authorization,Auth_Key,Auth_Email=ReadYaml("./CloudFlareD1Config.yaml","D1")
     S3StorageRequest=D1SdkClient(D1_url,Authorization,Auth_Key,Auth_Email)
-    PayLoad=S3StorageRequest.InsertPayload("dppt","error","蓝票开具异常","蓝票开具接口请求超时","/kpfw/spHandler?cdlj=blue-invoice-makeout","https://devdoc.eu.org/images/001.jpg")
+    PayLoad=S3StorageRequest.InsertPayload("dppt","error","蓝票开具异常","蓝票开具接口请求超时","/kpfw/spHandler?cdlj=blue-invoice-makeout","https://devdoc.eu.org/images/changsha.jpg")
     #PayLoad=S3StorageRequest.SelectPayload("sys_code","xdzswj")
     res=S3StorageRequest.QueryD1Client(payload=PayLoad)
     if json.loads(res)["success"]:
