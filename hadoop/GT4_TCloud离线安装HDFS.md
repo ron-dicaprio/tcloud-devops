@@ -25,7 +25,7 @@ CPU:2Socket 2Core
 Memory 4G
 disk space:200G
 java:openjdk version "1.8.0_431"
-HDFS:base on hadoop-3.2.1, HDFS version 2.5.0
+HDFS:base on hadoop-3.2.1, HDFS version 3.2.1-TBDS-5.2.0.1
 # TBDS:5.2.0.1 * fuck tbds
 ```
 
@@ -35,7 +35,7 @@ HDFS:base on hadoop-3.2.1, HDFS version 2.5.0
 # base url
 https://cloud.tencent.com/developer/article/2394774?from_column=20421&from=20421
 # NameNode Address
-hdfs-86-105-132-170
+hdfs-86-105-132-170/hdfs-86-105-132-171
 # NameNode Storage
 /data/hadoop/hdfs/namenode
 # Datanode Storage
@@ -43,6 +43,13 @@ hdfs-86-105-132-170
 # datanode Address
 hdfs-86-105-132-169
 hdfs-86-105-132-170(namenode+datanode)
+hdfs-86-105-132-171
+# JournalNode
+hdfs-86-105-132-169
+hdfs-86-105-132-170
+hdfs-86-105-132-171
+# ZKFC
+hdfs-86-105-132-169
 hdfs-86-105-132-171
 ```
 
@@ -169,6 +176,8 @@ export HDFS_DATANODE_USER="root"
 export HDFS_SECONDARYNAMENODE_USER="root"
 export YARN_RESOURCEMANAGER_USER="root"
 export YARN_NODEMANAGER_USER="root"
+export HDFS_ZKFC_USER="root"
+export HDFS_JOURNALNODE_USER="root"
 ```
 
 ### core-site.xml
@@ -194,27 +203,14 @@ export YARN_NODEMANAGER_USER="root"
 <configuration>
     <property>
       <name>fs.defaultFS</name>
-      <value>hdfs://hdfs-86-105-132-170:8020</value>
+      <value>hdfs://hdfs-86-105-132-170:9000</value>
       <final>true</final>
-    </property>
-    <property>
-        <name>io.file.buffer.szie</name>
-        <value>131072</value>
     </property>
     <property>
         <name>ha.zookeeper.quorum</name>
         <value>hdfs-86-105-132-170:2181,hdfs-86-105-132-171:2181,hdfs-86-105-132-169:2181</value>
     </property>
-    <!-- 设置HDFS web UI用户身份 -->
-    <property>
-        <name>hadoop.http.staticuser.user</name>
-        <value>root</value>
-    </property>
-    <!-- 配置该root允许通过代理访问的主机节点 -->
-    <property>
-        <name>hadoop.proxyuser.root.hosts</name>
-        <value>*</value>
-    </property>
+
     <!-- 对于每个<root>用户，hosts必须进行配置，而groups和users至少需要配置一个。-->
     <!-- 配置该root允许代理的用户所属组 -->
     <property>
@@ -231,7 +227,7 @@ export YARN_NODEMANAGER_USER="root"
         <name>fs.trash.interval</name>
         <value>1440</value>
     </property>
-    <!-- 文件系统垃圾桶保存时间 -->
+    <!-- 临时文件目录 -->
     <property>
       <name>hadoop.tmp.dir</name>
       <value>/data/hadoop/hdfs/tmp</value>
@@ -268,6 +264,58 @@ export YARN_NODEMANAGER_USER="root"
         <value>hdfsCluster</value>
     </property>
 
+    <property>
+      <name>dfs.ha.fencing.methods</name>
+      <value>shell(/bin/true)</value>
+    </property>
+    
+    <property>
+      <name>dfs.domain.socket.path</name>
+      <value>/var/lib/hadoop-hdfs/dn_socket</value>
+    </property>
+    
+    <!-- 说明：nameservice包含哪些namenode -->
+    <property>
+        <name>dfs.ha.namenodes.hdfsCluster</name>
+        <value>nn1,nn2</value>
+    </property>
+
+    <!-- 说明：名为nn1的namenode 的rpc地址和端口号，rpc用来和datanode通讯，默认值：9000，local-168-182-110为节点hostname-->
+    <property>
+        <name>dfs.namenode.rpc-address.hdfsCluster.nn1</name>
+        <value>hdfs-86-105-132-170:8020</value>
+    </property>
+
+    <!-- 说明：名为nn2的namenode 的rpc地址和端口号，rpc用来和datanode通讯，默认值：9000，local-168-182-113为节点hostname-->
+    <property>
+        <name>dfs.namenode.rpc-address.hdfsCluster.nn2</name>
+        <value>hdfs-86-105-132-171:8020</value>
+    </property>
+
+    <!-- 说明：名为nn1的namenode 的http地址和端口号，web客户端 -->
+    <property>
+        <name>dfs.namenode.http-address.hdfsCluster.nn1</name>
+        <value>hdfs-86-105-132-170:50070</value>
+    </property>
+
+    <!-- 说明：名为nn2的namenode 的http地址和端口号，web客户端 -->
+    <property>
+        <name>dfs.namenode.http-address.hdfsCluster.nn2</name>
+        <value>hdfs-86-105-132-171:50070</value>
+    </property>
+
+    <!-- 说明：失效转移时使用的秘钥文件。 -->
+    <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/data/hadoop/hdfs/journalnode</value>
+    </property>
+    
+    <!-- 说明：namenode间用于共享编辑日志的journal节点列表 -->
+    <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>qjournal://hdfs-86-105-132-171:8485;hdfs-86-105-132-170:8485/hdfsCluster</value>
+    </property>
+    
     <!-- 配合 HBase 或其他 dfs 客户端使用，表示开启短路径读，可以用来优化客户端性能 -->
     <property>
         <name>dfs.client.read.shortcircuit</name>
@@ -275,19 +323,36 @@ export YARN_NODEMANAGER_USER="root"
     </property>
     
     <property>
+      <name>dfs.client.read.shortcircuit.streams.cache.size</name>
+      <value>4096</value>
+    </property>
+    
+    <property>
+      <name>dfs.client.retry.policy.enabled</name>
+      <value>false</value>
+    </property>
+    
+    <property>
         <name>dfs.replication</name>
-        <value>1</value>
+        <value>3</value>
     </property>
 
+    <!-- 开启NameNode失败自动切换 -->
+    <property>
+        <name>dfs.ha.automatic-failover.enabled</name>
+        <value>true</value>
+    </property>
+
+    <!-- 配置失败自动切换实现方式 -->
+    <property>
+        <name>dfs.client.failover.proxy.provider.hdfsCluster</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+    
     <!-- 说明：是否开启权限检查 -->
     <property>
         <name>dfs.permissions.enabled</name>
         <value>false</value>
-    </property>
-    
-    <property>
-        <name>dfs.namenode.rpc-address</name>
-        <value>hdfs-86-105-132-170:8020</value>
     </property>
 
     <property>
@@ -313,11 +378,24 @@ export YARN_NODEMANAGER_USER="root"
     </property>
 
     <property>
-        <name>dfs.permissions</name>
-        <value>false</value>
+        <name>dfs.datanode.https.address</name>
+        <value>0.0.0.0:50074</value>
     </property>
 
+    <!--<property>
+        <name>dfs.permissions</name>
+        <value>false</value>
+    </property>-->
 </configuration>
+```
+
+### workers
+
+```shell
+# cat /opt/hadoop-3.2.1/etc/hadoop/workers
+hdfs-86.105.132.169
+hdfs-86.105.132.170
+hdfs-86.105.132.171
 ```
 
 ### mapred-site.xml
@@ -343,9 +421,28 @@ export YARN_NODEMANAGER_USER="root"
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
+    <!-- 设置MR程序默认运行模式，yarn集群模式，local本地模式 -->
     <property>
       <name>mapreduce.framework.name</name>
       <value>yarn</value>
+    </property>
+    
+    <!-- yarn环境变量 -->
+    <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+    </property>
+
+    <!-- map环境变量 -->
+    <property>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+    </property>
+
+    <!-- reduce环境变量 -->
+    <property>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
     </property>
 </configuration>
 ```
@@ -371,11 +468,76 @@ export YARN_NODEMANAGER_USER="root"
 <configuration>
 
 <!-- Site specific YARN configuration properties -->
+    <!--开启ResourceManager HA功能-->
     <property>
-      <name>yarn.resourcemanager.hostname</name>
-      <value>hdfs-86-105-132-170</value>
+        <name>yarn.resourcemanager.ha.enabled</name>
+        <value>true</value>
+    </property>
+    
+    <!--标志ResourceManager-->
+    <property>
+        <name>yarn.resourcemanager.cluster-id</name>
+        <value>yarn-cluster</value>
+    </property>
+    
+    <!--集群中ResourceManager的ID列表，后面的配置将引用该ID-->
+    <property>
+        <name>yarn.resourcemanager.ha.rm-ids</name>
+        <value>rm1,rm2</value>
     </property>
 
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>hdfs-86-105-132-170</value>
+    </property>
+    
+    <!-- 设置YARN集群主角色运行节点rm1-->
+    <property>
+        <name>yarn.resourcemanager.hostname.rm1</name>
+        <value>hdfs-86-105-132-170</value>
+    </property>
+
+    <!-- 设置YARN集群主角色运行节点rm2-->
+    <property>
+        <name>yarn.resourcemanager.hostname.rm2</name>
+        <value>hdfs-86-105-132-171</value>
+    </property>
+
+    <property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>hdfs-86-105-132-170:8084</value>
+    </property>
+    
+    <!--ResourceManager1的Web页面访问地址-->
+    <property>
+        <name>yarn.resourcemanager.webapp.address.rm1</name>
+        <value>hdfs-86-105-132-170:8084</value>
+    </property>
+
+    <!--ResourceManager2的Web页面访问地址-->
+    <property>
+        <name>yarn.resourcemanager.webapp.address.rm2</name>
+        <value>hdfs-86-105-132-171:8084</value>
+    </property>
+    
+    <!--ZooKeeper集群列表-->
+    <property>
+        <name>hadoop.zk.address</name>
+        <value>hdfs-86-105-132-170:2181,hdfs-86-105-132-171:2181,hdfs-86-105-132-169:2181</value>
+    </property>
+
+    <!--启用ResouerceManager重启的功能，默认为false-->
+    <property>
+        <name>yarn.resourcemanager.recovery.enabled</name>
+        <value>true</value>
+    </property>
+
+    <!--用于ResouerceManager状态存储的类-->
+    <property>
+        <name>yarn.resourcemanager.store.class</name>
+        <value>org.apache.hadoop.yarn.server.resourcemanager.recovery.ZKRMStateStore</value>
+    </property>
+    
     <property>
       <name>yarn.nodemanager.address</name>
       <value>0.0.0.0:45454</value>
@@ -384,6 +546,16 @@ export YARN_NODEMANAGER_USER="root"
     <property>
       <name>yarn.resourcemanager.scheduler.address</name>
       <value>hdfs-86-105-132-170:8030</value>
+    </property>
+    
+    <property>
+      <name>yarn.resourcemanager.scheduler.class</name>
+      <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+    </property>
+    
+    <property>
+      <name>yarn.resourcemanager.scheduler.monitor.enable</name>
+      <value>false</value>
     </property>
     
     <property>
@@ -554,13 +726,20 @@ log4j.appender.NMAUDIT.DatePattern=.yyyy-MM-dd
 ### 运行datanode
 
 ```shell
-1、在namemode上执行初始化
-# hadoop namenode -format
-2、datanode节点不需要执行hadoop namenode -format
-3、在namemode上运行hdfs
-# bash start-dfs.sh
-4、在datanode上执行数据节点初始化和纳管
-# bash hadoop-daemon start datanode
+1、启动journalnode，在三个规划的节点上执行
+# /opt/hadoop-3.2.1/bin/hdfs --daemon start journalnode 
+2、在namemode上执行初始化
+# /opt/hadoop-3.2.1/bin/hdfs namenode -format
+3、启动hdfs-86-105-132-170 master上的NameNode节点
+# /opt/hadoop-3.2.1/bin/hdfs --daemon start namenode
+4、hdfs-86-105-132-171上同步master节点数据
+# /opt/hadoop-3.2.1/bin/hdfs namenode -bootstrapStandby
+5、启动hdfs-86-105-132-171上namenode节点
+# /opt/hadoop-3.2.1/bin/hdfs --daemon start namenode
+# 6、在master namenode
+# /opt/hadoop-3.2.1/bin/hdfs zkfc -formatZK
+6、启动dfs
+# /opt/hadoop-3.2.1/sbin/start-dfs.sh
 ```
 
 ### hdfs常用命令
