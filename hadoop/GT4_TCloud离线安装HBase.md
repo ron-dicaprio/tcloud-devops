@@ -125,19 +125,48 @@ exit 0
 
 ### 修改zookeeper的配置文件
 
+#### zoo.cfg
+
 ```shell
 # cp /opt/zookeeper3.8.4-bin/conf/zoo_sample.cfg /opt/zookeeper3.8.4-bin/conf/zoo.cfg
 # cat zoo.cfg
 # ...
+# ZooKeeper 使用的毫秒为单位的时间单元，用于进行心跳，最小会话超时将是 tickTime 的两倍。
+tickTime=2000
+# 存储内存中数据库快照的位置。
 dataDir=/data/zookeeper
+# 数据库更新的事务日志所在目录。
+dataLogDir=/data/zookeeper/log
+# 监听客户端连接的端口。
+clientPort=2181
+# LF 初始通信时限，即集群中的 follower 服务器（F）与 leader 服务器（L）之间初始连接时能容忍的最多心跳数（tickTime的数量）。
+initLimit=5
+# LF 同步通信时限，即集群中的 follower 服务器（F）与 leader 服务器（L）之间请求和应答之间能容忍的最多心跳数（tickTime的数量）。
+syncLimit=2
 server.1=hdfs-86-105-132-170
 server.2=hdfs-86-105-132-171
 server.3=hdfs-86-105-132-169
-# ...
+# 指定自动清理事务日志和快照文件的频率，单位是小时。 
+autopurge.purgeInterval=1
+```
+
+#### set myid
+
+```shell
 # set myid for each node
 echo 1 > hdfs-86-105-132-170:/data/zookeeper/myid
 echo 2 > hdfs-86-105-132-171:/data/zookeeper/myid
 echo 3 > hdfs-86-105-132-169:/data/zookeeper/myid
+```
+
+#### set /bin/zkEnv.sh 
+
+```shell
+# cat /opt/zookeeper3.8.4-bin/bin/zkEnv.sh
+
+# 修改 zkEnv.sh 文件中的ZK_SERVER_HEAP值，缺省为1000，单位是MB，修改为2048。
+# default heap for zookeeper server
+ZK_SERVER_HEAP="${ZK_SERVER_HEAP:-2048}"
 ```
 
 ### 配置HBase节点的java环境
