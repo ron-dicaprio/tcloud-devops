@@ -136,7 +136,7 @@ source /etc/profile
 # echo 'export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib' >> /etc/profile
 ```
 
-### 创建hdfs用户账号(这一步不做，用root，因为我水平不够)
+### 创建hdfs用户账号(这一步不做先)
 
 ```shell
 # 创建用户并给与登陆的权限
