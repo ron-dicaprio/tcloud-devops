@@ -36,3 +36,11 @@
 ```sh
 # We use boto3 to operate Tencent COS By S3 storage protocol
 ```
+## Hadoop
+```sh
+hadoop hdfs and hbase and so on.
+```
+## DM8
+```sh
+Install DM8 database here.
+```
