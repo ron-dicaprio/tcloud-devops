@@ -2,6 +2,7 @@
 #!/usr/bin/python3
 import dmPython
 from dbutils.pooled_db import PooledDB
+sql_pool=None
 class PyDm8DbClass():
     def __init__(self,host,port,user,password):
         self.host = host
@@ -30,7 +31,6 @@ class PyDm8DbClass():
 
     def PyDm8sql_with_pool(self,str_sql):
         global sql_pool
-        sql_pool=None
         if sql_pool is None:
             sql_pool=self.PyDm8DbPOOL()
         try:
