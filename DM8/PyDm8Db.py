@@ -12,7 +12,7 @@ POOL = PooledDB(
  setsession=[], # 开始会话前执行的命令列表。如：["set datestyle to ...", "set time zone ..."]
  ping=0,
  # pingDM 服务端，检查是否服务可用。# 如：0 = None = never, 1 = default = whenever it is requested, 2 = when a cursor is created, 7 = always
- host='111.189.157.154', # 主机号
+ host='1.1.1.1', # 主机号
  port=55236, # 端口号
  user='SYSDBA', # 用户名
  password='SYSDBA', # 密码
