@@ -32,8 +32,6 @@ HDFS:base on hadoop-3.2.1, HDFS version 3.2.1-TBDS-5.2.0.1
 ### 本次集群规划表
 
 ```shell
-# base url
-https://cloud.tencent.com/developer/article/2394774?from_column=20421&from=20421
 # NameNode Address
 hdfs-86-105-132-170/hdfs-86-105-132-171
 # NameNode Storage
