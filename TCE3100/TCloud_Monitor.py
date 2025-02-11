@@ -8,7 +8,7 @@ from tcecloud.monitor.v20180724 import monitor_client, models
 # disable_warnings from tcecloud sdk
 urllib3.disable_warnings()
 tce_client=None
-tdsql_instance_list={"tdsqlshard-nzvyqvnz":"电子发票平台_新海关库","tdsqlshard-cdm29ozv":"电子发票平台_机动车库","tdsqlshard-c1til7ph":"电子发票平台_红字通知库","tdsqlshard-ljn14mx9":"电子发票平台_入账库","tdsqlshard-itdvtrmx":"电票生产-发票交付机制-消息库","tdsqlshard-rovfkygf":"电票生产__发票用票库","tdsqlshard-fun25r1h":"电票生产-公共库","tdsqlshard-pq8oqn9d":"电票生产-成品油库","tdsqlshard-133jnjmt":"电子发票纳税人基础信息","tdsqlshard-pjck1qjv":"电子发票管理库","tdsqlshard-lgelsia5":"发票缓存库"}
+tdsql_instance_list={"tdsqlshard-nzvyqvnz":"库1","tdsqlshard-cdm29ozv":"库2","tdsqlshard-c1til7ph":"库3","tdsqlshard-ljn14mx9":"库4","tdsqlshard-itdvtrmx":"库5","tdsqlshard-rovfkygf":"库6","tdsqlshard-fun25r1h":"库7","tdsqlshard-pq8oqn9d":"库8","tdsqlshard-133jnjmt":"库9","tdsqlshard-pjck1qjv":"库10","tdsqlshard-lgelsia5":"库11"}
 class TSFSdkClient():
     def __init__(self,tce_region,tce_endpoint,SecretId,SecretKey):
         self.tce_region=tce_region
