@@ -109,6 +109,12 @@ services:
     networks:
       - ops_monitor
     restart: always
+    # 添加influxdb健康检查
+    healthcheck:  
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
       
   telegraf:
     image: registry.cn-guangzhou.aliyuncs.com/x86-registry/telegraf:latest
@@ -122,7 +128,7 @@ services:
     networks:
       - ops_monitor
     depends_on:
-      - influxdb
+      - influxdb_v2
     restart: always
     
 networks:
@@ -158,7 +164,7 @@ omit_hostname = true
   urls = ["http://influxdb_v2:8086"]
   token = "@Sysadm1n"
   organization = "ops_monitor"
-  bucket = "ops_monitor"
+  bucket = "telegraf"
 
 [[inputs.exec]]
   commands = ["bash /data/ssh/check.sh"]
