@@ -209,7 +209,6 @@ omit_hostname = true
   # Prometheus 输出插件配置
   listen = ":9273"  # 配置Telegraf监听的端口
   metric_version = 2  # Prometheus的版本，通常选择2
-vim /
   # 设置暴露的URL路径
   path = "/metrics" 
 ```
