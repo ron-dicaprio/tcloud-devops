@@ -20,7 +20,7 @@ try:
     # full screen
     driver.maximize_window()
     driver.get("https://capacity.eu.org/jenkins/login")
-    # wait elements load adn login.
+    # wait elements load and login.
     username_input = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "j_username"))
     ).send_keys("sysadmin")
@@ -40,7 +40,7 @@ try:
     appname_input = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '#main-panel > form > div.parameters > div:nth-child(1) > div.setting-main > div > input.jenkins-input'))
     ).send_keys("nginx")
-    # delete default value
+    # clear default value
     appversion_input=WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, '#main-panel > form > div.parameters > div:nth-child(2) > div.setting-main > div > input.jenkins-input'))
     ).clear()
