@@ -8,7 +8,6 @@ from dbutils.pooled_db import PooledDB
 MysqlPOOL=None
 def init_pool():
     # 配置数据库连接信息
-    global MysqlPOOL
     if MysqlPOOL is None:
         MysqlPOOL = PooledDB(
             creator=pymysql,  # 使用链接数据库的模块
