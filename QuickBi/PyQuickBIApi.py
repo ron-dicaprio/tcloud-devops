@@ -120,3 +120,4 @@ if __name__ == "__main__":
     # limit workers num ，max to 8
     workers_num=os.cpu_count() if os.cpu_count() < 8 else 8
     uvicorn.run("PyQuickBIApi:app", host="0.0.0.0",port=58080, workers=workers_num, loop="uvloop", http="httptools",reload=False)
+    
