@@ -53,10 +53,11 @@ class PyQuickBiSdk():
            'Content-Type': self.content_type
            }
         try:
-            # 待优化 异步网络请求
+            # 后续调整 异步网络请求
             if self.HTTP_METHOD.upper() == "GET":
                 resp= requests.get(self.HOST+self.Method_URI, headers=headers,params=Params).json()
             else:
+                # 暂时只用到GET请求
                 print("Unsupport HTTP Method")
                 sys.exit(1)
         except Exception as e:
