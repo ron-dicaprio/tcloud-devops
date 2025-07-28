@@ -115,7 +115,7 @@ async def GetworksId(worksId:str):
         except Exception as Err:
             return {"info":"Error","data":Err}
     else:
-        return {"info":"Error","data":"datasetId Formate Error"}
+        return {"info":"Error","data":"worksId Formate Error"}
     
 if __name__ == "__main__":
     # limit workers num ，max to 8
