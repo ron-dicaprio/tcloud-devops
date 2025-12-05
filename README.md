@@ -1,4 +1,4 @@
-# We Use Code To Do Something
+# LOL!  
 ## TCE3100
 ```sh
 # we use tencent SDK for TCE interface
