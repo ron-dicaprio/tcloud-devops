@@ -138,13 +138,7 @@ def GetAnyBackupList(baseUrl,AccessKey,SecretKey,location):
 if __name__ == "__main__":
     # 用yaml替代AKSK_LISTS对象
     AKSK_LISTS={
-        "YunDa_AnyBackup": {"baseUrl": "https://10.100.10.107:9600","AccessKey": "2542********************ad3","SecretKey": "2cce1*****************************a6d004"},
-        "NingXiang_AnyBackup": {"baseUrl": "https://10.110.10.148:9600","AccessKey": "b629********************0cfe4","SecretKey":"1d3da****************************************0119"},
-        "NingXiangSAP_AnyBackup": {"baseUrl": "https://10.110.10.148:9600","AccessKey": "68f76********************367f50","SecretKey":"85f6****************************************6c90"},
-        "TongRen_AnyBackup": {"baseUrl": "https://10.120.10.40:9600","AccessKey": "3c25b********************91e3","SecretKey":"d5d4****************************************f9"},
-        "QinZhou_AnyBackup": {"baseUrl": "https://10.130.10.30:9600","AccessKey": "73981********************8c7d","SecretKey":"5de8a****************************************3d9d"},
-        "KaiYang_AnyBackup": {"baseUrl": "https://10.150.10.148:9600","AccessKey": "cfea********************dc683","SecretKey":"242d****************************************b6e9"},
-        "HangYeYun_AnyBackup": {"baseUrl": "https://10.253.2.48:9600","AccessKey": "89e2********************7b93","SecretKey":"84a6****************************************ae5b4"}  
+        "Test_AnyBackup": {"baseUrl": "https://10.100.10.107:9600","AccessKey": "2542********************ad3","SecretKey": "2cce1*****************************a6d004"}
     }
     for location,value in AKSK_LISTS.items():
         baseUrl,AccessKey,SecretKey=value['baseUrl'],value['AccessKey'],value['SecretKey']
